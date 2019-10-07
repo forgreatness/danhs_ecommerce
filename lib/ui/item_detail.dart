@@ -181,7 +181,7 @@ class ItemShortDescription extends StatelessWidget {
           ),
           SizedBox(height: 8.0,),
           Text(
-            item.shortDescription,
+            item.shortDescription ?? "",
             style: Theme.of(context).textTheme.body1.copyWith(
               color: Colors.black45,
               fontSize: 16.0,
@@ -203,7 +203,7 @@ class ItemDetailHeader extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(bottom: 180.0),
+          padding: const EdgeInsets.only(bottom: 200.0),
           child: ArcBannerImage(),
         ),
         Positioned(
@@ -375,7 +375,7 @@ class ArcBannerImage extends StatelessWidget {
       child: Image.asset(
         'assets/ebay_logo.png',
         width: screenWidth,
-        height: 180.0,
+        height: 150.0,
         fit: BoxFit.cover,
       ),
     );
