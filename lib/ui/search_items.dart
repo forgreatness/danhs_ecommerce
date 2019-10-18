@@ -146,20 +146,7 @@ class _ItemListWidget extends State<ItemList> {
                 height: 100.0,
                 child: Row(
                   children: <Widget>[
-                    Container(
-                      height: 100.0,
-                      width: 70.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(5),
-                          topLeft: Radius.circular(5)
-                        ),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(items.itemSummaries[index].image.imageUrl),
-                        )
-                      ),
-                    ),
+                    ListItemImage(items.itemSummaries[index]),
                     Container(
                       height: 100.0,
                       child: Padding(
@@ -167,52 +154,8 @@ class _ItemListWidget extends State<ItemList> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(3, 0, 0, 3),
-                              child: Container(
-                                width: 260,
-                                child: Text(
-                                  items.itemSummaries[index].title,
-                                  style: new TextStyle(
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 15.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500
-                                  ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              )
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(3, 0, 0, 3),
-                              child: Container(
-                                width: 260,
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: '\$ ' + items.itemSummaries[index].price.value + " ",
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.w500,
-                                        )
-                                      ),
-                                      TextSpan(
-                                        text: items.itemSummaries[index].price.currency,
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontStyle: FontStyle.normal,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                        )
-                                      )
-                                    ]
-                                  )
-                                ),
-                              )
-                            )
+                            ListItemTitle(items.itemSummaries[index]),
+                            ListItemPrice(items.itemSummaries[index]),
                           ],
                         ),
                       ),
@@ -227,6 +170,96 @@ class _ItemListWidget extends State<ItemList> {
           );
         },
       )
+    );
+  }
+}
+
+class ListItemPrice extends StatelessWidget {
+  final itemSummariesUtils.Item item;
+
+  ListItemPrice(this.item);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(3, 0, 0, 3),
+      child: Container(
+        width: 260,
+        child: Text.rich(
+          TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text: '\$ ' + item.price.value + " ",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  fontStyle: FontStyle.normal,
+                  color: Colors.green,
+                  fontWeight: FontWeight.w500,
+                )
+              ),
+              TextSpan(
+                text: item.price.currency,
+                style: TextStyle(
+                  fontSize: 15.0,
+                  fontStyle: FontStyle.normal,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                )
+              )
+            ]
+          )
+        ),
+      )
+    );
+  }
+}
+
+class ListItemTitle extends StatelessWidget {
+  final itemSummariesUtils.Item item;
+
+  ListItemTitle(this.item);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(3, 0, 0, 3),
+      child: Container(
+        width: 260,
+        child: Text(
+          item.title,
+          style: new TextStyle(
+            fontStyle: FontStyle.normal,
+            fontSize: 15.0,
+            color: Colors.black,
+            fontWeight: FontWeight.w500
+          ),
+          textAlign: TextAlign.left,
+        ),
+      )
+    );
+  }
+}
+
+class ListItemImage extends StatelessWidget {
+  final itemSummariesUtils.Item item;
+
+  ListItemImage(this.item);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100.0,
+      width: 70.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(5),
+          topLeft: Radius.circular(5)
+        ),
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(item.image.imageUrl),
+        )
+      ),
     );
   }
 }
@@ -282,7 +315,11 @@ class _SearchItemDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    close(context, query);
-    return ListView();
+    return ListTile(
+      title: Text(this.query),
+      onTap: () {
+        this.close(context, this.query);
+      },
+    );
   }
 }
