@@ -77,15 +77,15 @@ class _SearchItemsState extends State<SearchItems> {
     final response = await http.get(
       apiUrl,
       headers: {
-        HttpHeaders.authorizationHeader: "Bearer ${networkUtils.getToken()}",
+        HttpHeaders.authorizationHeader: "Bearer ${networkUtils.EbayApi.getToken()}",
       }
     );
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
-    } else if (response.statusCode == 401) {
+    } else if (response.statusCode == 401 || response.statusCode == 400) {
       String authUrl = 'https://api.ebay.com/identity/v1/oauth2/token';
-      String credentials = "${networkUtils.APP_ID}:${networkUtils.CERT_ID}";
+      String credentials = "${networkUtils.EbayApi.appId}:${networkUtils.EbayApi.certId}";
       String encodedCredentials = base64Url.encode(utf8.encode(credentials));
 
       final authResponse = await http.post(
@@ -101,9 +101,9 @@ class _SearchItemsState extends State<SearchItems> {
       );
 
       if (authResponse.statusCode == 200) {
-        networkUtils.setToken(json.decode(authResponse.body)["access_token"]);
+        networkUtils.EbayApi.setToken(json.decode(authResponse.body)["access_token"]);
         return getItems(query);
-      } else if (authResponse.statusCode == 429 || authResponse.statusCode == 400) {
+      } else if (authResponse.statusCode == 429) {
         throw Exception('The request limit has been reached for the resource');
       } else {
         throw Exception('Failed to acquire authentication');
